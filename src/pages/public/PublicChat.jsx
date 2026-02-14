@@ -180,7 +180,7 @@ export default function PublicChat() {
 
       <button
         onClick={closeChat}
-        className="text-sm text-red-600 hover:underline"
+        className="text-lg bg-aramexRed text-white hover:underline"
       >
         Close Chat
       </button>

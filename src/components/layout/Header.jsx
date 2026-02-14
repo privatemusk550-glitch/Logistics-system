@@ -32,18 +32,30 @@ const Header = () => {
             </div>
             <div className="hidden text-gray-400 p-3 gap-2 larg:flex ">
                 <span className="flex text-[14px]">
-                    <img src= {translate} alt="Translation" className="h-7" />
-                    <div id="google_translate_element">
-                  <select id="languageSwitcher" onChange={null}>
-                    <option value="">🌍 Auto Detect</option>
-                    <option value="en">English</option>
-                    <option value="fr">French</option>
-                    <option value="pt">Portuguese</option>
-                    <option value="es">Spanish</option>
-                    <option value="ar">Arabic</option>
-                  </select>
-              </div>
-                </span>
+                        <img src= {translate} alt="Translation" className="h-7" />
+                        <div id="google_translate_element"></div>
+                    {/* Manual selector: keep it separate from Google-injected container to avoid duplicate UI */}
+                    <select
+                        id="languageSwitcher"
+                        className="ml-2 hidden"
+                        defaultValue=""
+                        onChange={(e) => {
+                            const val = e.target.value
+                            const goog = document.querySelector('.goog-te-combo')
+                            if (goog) {
+                                goog.value = val
+                                goog.dispatchEvent(new Event('change'))
+                            } else {
+                                try {
+                                    localStorage.setItem('preferredLanguage_publicTrack', val)
+                                } catch (err) {
+                                    console.warn('[Header] failed to save preferredLanguage_publicTrack', err)
+                                }
+                            }
+                        }}
+                    >
+                    </select>
+                    </span>
                 <span className="flex ml-3">
                     <img src={pin} alt="location-pin" className="h-7" />
                     <p>United Arab Emirates</p>

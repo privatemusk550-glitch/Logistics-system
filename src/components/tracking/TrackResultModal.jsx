@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
+import emailjs from '@emailjs/browser'
 
 
 
@@ -9,6 +10,8 @@ export default function TrackResultModal({ pkg, onClose }) {
   const [signedUrl, setSignedUrl] = useState(null)
 
 const [images, setImages] = useState([])
+  const [chatLoading, setChatLoading] = useState(false)
+  const [chatError, setChatError] = useState('')
 
 useEffect(() => {
   if (!pkg?.id) return
@@ -42,7 +45,8 @@ useEffect(() => {
 
 
   async function goToChat() {
-    
+  setChatError('')
+  setChatLoading(true)
   // Check if open chat exists
   const { data: existing } = await supabase
     .from('chats')
@@ -52,8 +56,9 @@ useEffect(() => {
     .limit(1)
 
   if (existing?.length > 0) {
-    navigate(`/chat/${existing[0].id}`)
-    return
+  navigate(`/chat/${existing[0].id}`)
+  setChatLoading(false)
+  return
   }
 
   // Create new chat
@@ -68,11 +73,93 @@ useEffect(() => {
     .single()
 
   if (error) {
-    alert(error.message)
-    return
+  setChatError(error.message || 'Failed to create chat')
+  setChatLoading(false)
+  return
   }
 
-  navigate(`/chat/${newChat.id}`)
+  // Insert a system message so the user sees an automatic welcome from the system
+  try {
+    // Insert the admin/bot message first so the chat contains the welcome immediately
+    await supabase.from('chat_messages').insert({
+      chat_id: newChat.id,
+      sender: 'admin',
+      message: 'Thanks for reaching out. Please wait while we connect you to customer care. 👋'
+    })
+  // inserted admin message
+  } catch (err) {
+    console.warn('[TrackResultModal] failed to insert system message', err)
+  }
+
+  // Fetch admin email from admin_public_emails (if available) and notify via EmailJS
+  try {
+    const { data: admin, error: adminErr } = await supabase
+      .from('admin_public_emails')
+      .select('email')
+      .eq('id', pkg.admin_id)
+      .single()
+
+    if (admin?.email) {
+      // sending email to admin
+      try {
+        const result = await emailjs.send(
+          'service_hp7tcgb',
+          'template_5ykzgam',
+          {
+            to_email: admin.email,
+            customer_name: pkg?.sender_name || pkg?.receiver_name || 'Guest User',
+            tracking_number: pkg?.tracking_number,
+            chat_link: `${window.location.origin}/admin/chat/${newChat.id}`,
+          },
+          'yRmDqe6CPNJQOzgti'
+        )
+        // email sent
+      } catch (err) {
+        console.error('[TrackResultModal] email failed:', err)
+      }
+    } else {
+      // no admin email found
+    }
+  } catch (err) {
+    console.warn('[TrackResultModal] failed to fetch admin email', err)
+  }
+
+  // finalize and navigate to chat
+  try {
+    navigate(`/chat/${newChat.id}`)
+    setChatLoading(false)
+  } catch (err) {
+    setChatLoading(false)
+    setChatError('Failed to open chat')
+    console.warn('[TrackResultModal] navigation failed', err)
+  }
+}
+
+// Sends an email to admin using EmailJS. Replace placeholders with your service/template/public key.
+async function sendAdminEmail(chat, pkg) {
+  try {
+    // use package sender email as user email if available
+    const userEmail = pkg?.sender_email || pkg?.receiver_email || 'unknown@example.com'
+    const userName = pkg?.sender_name || pkg?.receiver_name || 'Guest User'
+
+    // Replace the following IDs with your EmailJS values
+    const SERVICE_ID = 'service_hp7tcgb'
+    const TEMPLATE_ID = 'template_5ykzgam'
+    const PUBLIC_KEY = 'yRmDqe6CPNJQOzgti'
+
+    console.log('[TrackResultModal] sending admin email for chat', chat.id)
+
+    await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+      user_name: userName,
+      user_email: userEmail,
+      chat_id: chat.id,
+    }, PUBLIC_KEY)
+
+    console.log('[TrackResultModal] Admin notified 📩')
+  } catch (err) {
+    console.error('[TrackResultModal] Email failed:', err)
+    throw err
+  }
 }
 
 
@@ -164,9 +251,9 @@ useEffect(() => {
         key={i}
         href={url}
         download
-        className="block bg-white text-black px-4 py-2 rounded-md"
+        className="block bg-white text-black items-center px-4 py-2 rounded-md"
       >
-        Download Image {i + 1}
+        View Package Content {i + 1}
       </a>
     ))}
   </div>
@@ -178,12 +265,20 @@ useEffect(() => {
 
         {/* Timeline here */}
 
-        <button
-          onClick={goToChat}
-          className="mt-10 w-full bg-white text-black py-3 rounded-xl"
-        >
-          Contact Customer Care
-        </button>
+        <div className="mt-10">
+          <button
+            onClick={goToChat}
+            disabled={chatLoading}
+            className="w-full bg-white text-black py-3 rounded-xl disabled:opacity-60"
+          >
+            {chatLoading ? 'Opening chat...' : 'Contact Customer Care'}
+          </button>
+          {chatError && (
+            <div className="mt-3 text-red-600 text-sm">
+              {chatError}
+            </div>
+          )}
+        </div>
 
       </div>
     </div>

@@ -13,22 +13,18 @@ export default function Login() {
   async function handleLogin(e) {
   e.preventDefault()
 
-  console.log("Attempting login...")
+  // attempting login
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
-  console.log("Login response:", data, error)
-
   if (error) {
-    console.log("Login error:", error.message)
     setError(error.message)
     return
   }
-
-  console.log("Login successful, navigating...")
+  // login successful
   navigate('/dashboard')
 }
 

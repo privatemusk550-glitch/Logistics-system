@@ -23,8 +23,7 @@ export default function CreateAdmin() {
       return
     }
 
-    console.log('Session token:', session.access_token)
-    console.log('User ID:', session.user.id)
+  // session info
 
     try {
       const response = await supabase.functions.invoke('create-admin', {
@@ -38,7 +37,7 @@ export default function CreateAdmin() {
         },
       })
 
-      console.log('Full response:', response)
+  // full response
 
       if (response.error) {
         throw new Error(response.error.message || 'Failed to create admin')
