@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
