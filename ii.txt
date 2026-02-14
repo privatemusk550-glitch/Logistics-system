@@ -1,0 +1,63 @@
+src/
+│
+├── assets/
+│   ├── images/
+│   │   ├── logo.webp
+│   │   ├── banner.webp
+│   │   ├── delivery.png
+│   │   ├── calculator.png
+│   │   ├── headset.png
+│   │   └── map.webp
+│   └── icons/
+│       ├── menu.svg
+│       ├── pin.svg
+│       └── translate.svg
+│
+├── components/
+│   │
+│   ├── layout/
+│   │   ├── Header.jsx
+│   │   ├── Footer.jsx
+│   │   ├── MainLayout.jsx
+│   │   └── LoadingScreen.jsx
+│   │
+│   ├── ui/
+│   │   ├── Button.jsx
+│   │   ├── Input.jsx
+│   │   ├── Card.jsx
+│   │   └── SectionTitle.jsx
+│   │
+│   └── tracking/
+│       ├── TrackForm.jsx
+│       ├── TrackingTimeline.jsx
+│       └── ShipmentCard.jsx
+│
+├── pages/
+│   ├── public/
+│   │   ├── PublicTrack.jsx
+│   │   └── PublicChat.jsx
+│   │
+│   ├── auth/
+│   │   ├── Login.jsx
+│   │   └── Signup.jsx
+│   │
+│   ├── dashboard/
+│   │   ├── Dashboard.jsx
+│   │   ├── AdminView.jsx
+│   │   ├── SuperAdminView.jsx
+│   │   ├── UserView.jsx
+│   │   ├── AdminPackages.jsx
+│   │   ├── PackageDetail.jsx
+│   │   ├── CreatePackage.jsx
+│   │   └── AdminChat.jsx
+│
+├── lib/
+│   ├── supabase.js
+│   └── auth-context.jsx
+│
+├── styles/
+│   └── globals.css
+│
+├── App.jsx
+├── main.jsx
+└── index.css
