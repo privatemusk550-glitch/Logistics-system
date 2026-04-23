@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "track": "Expédier & Suivre",
+    "container": "Suivi Conteneur",
+    "services": "Services",
+    "about": "À Propos",
+    "contact": "Contact",
+    "login": "Connexion Admin"
+  },
+  "hero": {
+    "title": "Suivez votre Envoi",
+    "subtitle": "Entrez votre numéro de suivi pour des mises à jour en temps réel",
+    "placeholder": "Entrez votre numéro de suivi...",
+    "button": "Suivre",
+    "searching": "Recherche...",
+    "hint": "Entrez votre numéro de suivi ci-dessus. Plusieurs numéros séparés par une virgule."
+  },
+  "container": {
+    "title": "Suivi de Conteneur",
+    "subtitle": "Suivez les conteneurs de fret maritime par numéro",
+    "placeholder": "Entrez le numéro de conteneur (ex: MSKU1234567)",
+    "button": "Suivre le Conteneur",
+    "notFound": "Conteneur introuvable. Veuillez vérifier le numéro et réessayer."
+  },
+  "services": {
+    "title": "Nos Services",
+    "send": "Envoyer un Colis",
+    "sendDesc": "Réservez et gérez vos envois facilement, de porte à porte.",
+    "quote": "Obtenir un Devis",
+    "quoteDesc": "Calculez les frais d'expédition rapidement et précisément.",
+    "support": "Support Client",
+    "supportDesc": "Nous sommes là pour vous aider, 24h/24 et 7j/7.",
+    "sustainable": "Logistique Durable",
+    "sustainableDesc": "Engagés à réduire l'impact environnemental.",
+    "flexible": "Solutions Flexibles",
+    "flexibleDesc": "Solutions logistiques sur mesure pour votre activité.",
+    "resilient": "Résilience de la Chaîne",
+    "resilientDesc": "Technologies avancées pour des opérations ininterrompues."
+  },
+  "footer": {
+    "about": "À Propos",
+    "terms": "Conditions d'utilisation",
+    "conditions": "Termes et Conditions",
+    "cookies": "Politique Cookies",
+    "rights": "Tous droits réservés."
+  },
+  "modal": {
+    "tracking": "Numéro de Suivi",
+    "sender": "Expéditeur",
+    "receiver": "Destinataire",
+    "senderName": "Nom Expéditeur",
+    "senderEmail": "Email Expéditeur",
+    "receiverName": "Nom Destinataire",
+    "receiverEmail": "Email Destinataire",
+    "receiverAddress": "Adresse Destinataire",
+    "status": "Statut du Colis",
+    "timeline": "Chronologie",
+    "images": "Images du Colis",
+    "chat": "Contacter le Service Client",
+    "chatLoading": "Ouverture du chat..."
+  }
+}

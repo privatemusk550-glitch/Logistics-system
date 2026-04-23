@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "track": "Ship & Track",
+    "container": "Container Tracking",
+    "services": "Services",
+    "about": "About Us",
+    "contact": "Contact",
+    "login": "Admin Login"
+  },
+  "hero": {
+    "title": "Track Your Shipment",
+    "subtitle": "Enter your tracking number to get real-time updates on your package",
+    "placeholder": "Enter tracking number...",
+    "button": "Track Now",
+    "searching": "Searching...",
+    "hint": "Enter your tracking number above. Multiple numbers separated by comma."
+  },
+  "container": {
+    "title": "Container Tracking",
+    "subtitle": "Track sea freight containers by container number",
+    "placeholder": "Enter container number (e.g. MSKU1234567)",
+    "button": "Track Container",
+    "notFound": "Container not found. Please check the number and try again."
+  },
+  "services": {
+    "title": "Our Services",
+    "send": "Send a Shipment",
+    "sendDesc": "Book and manage your shipments with ease, door to door.",
+    "quote": "Get a Quote",
+    "quoteDesc": "Calculate shipping costs quickly and accurately.",
+    "support": "Customer Support",
+    "supportDesc": "We are here to help, 24/7 anytime you need us.",
+    "sustainable": "Sustainable Logistics",
+    "sustainableDesc": "Committed to reducing environmental impact and maximising efficiency.",
+    "flexible": "Flexible Solutions",
+    "flexibleDesc": "Tailored logistics solutions that adapt to your business needs.",
+    "resilient": "Supply Chain Resilience",
+    "resilientDesc": "Advanced technologies ensuring uninterrupted operations."
+  },
+  "footer": {
+    "about": "About Us",
+    "terms": "Terms Of Use",
+    "conditions": "Terms And Conditions",
+    "cookies": "Cookie Policy",
+    "rights": "All rights reserved."
+  },
+  "modal": {
+    "tracking": "Tracking Number",
+    "sender": "Sender",
+    "receiver": "Receiver",
+    "senderName": "Sender's Name",
+    "senderEmail": "Sender's Email",
+    "receiverName": "Receiver's Name",
+    "receiverEmail": "Receiver's Email",
+    "receiverAddress": "Receiver's Address",
+    "status": "Package Status",
+    "timeline": "Shipment Timeline",
+    "images": "Package Images",
+    "chat": "Contact Customer Care",
+    "chatLoading": "Opening chat..."
+  }
+}

@@ -1,8 +1,36 @@
+/* 
+ * global.css
+ * -----------
+ * Global styles for the app.
+ * 
+ * We keep this minimal — most styling is done via Tailwind utility classes.
+ * Only add styles here when Tailwind alone is not sufficient.
+ *
+ * .input — reusable form field style (avoids repeating long Tailwind class strings)
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
+/* 
+ * Reusable input style — apply with className="input" in any component.
+ * This saves repeating the same 6+ tailwind classes on every form field.
+ */
+@layer components {
+  .input {
+    @apply w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm
+           outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+           bg-white text-gray-800 placeholder-gray-400 transition-shadow;
+  }
 }
 
+/* Smooth scrolling for the whole page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent layout shift when modal opens */
+body {
+  overflow-x: hidden;
+}

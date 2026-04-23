@@ -1,86 +1,191 @@
-import logo from '@/assets/images/aramex-logo-english.webp';
-import translate from '@/assets/icons/translate.png'
-import pin from '@/assets/icons/pin.png'
-import  Menu  from '@/assets/icons/burger.png';
-import banner from '@/assets/images/homepageen80773f4d-2dce-418c-8612-1d7862fe5f68.webp'
+/**
+ * Header.jsx
+ * -----------
+ * Main navigation header for the public-facing pages.
+ *
+ * KEY FIX (Production Translation Bug):
+ * The old code used Google Translate's external script which breaks in production
+ * because the global callback (googleTranslateElementInit) doesn't fire reliably
+ * on Vercel/Netlify due to CSP and timing issues.
+ *
+ * NEW APPROACH:
+ * We use react-i18next (already in package.json) which works perfectly in
+ * production — translation files are bundled with the app, no external scripts needed.
+ *
+ * For junior devs:
+ * - useTranslation() gives us the `t()` function to look up translated strings
+ * - i18n.changeLanguage('ar') switches the whole app language instantly
+ * - Translation files live in /src/i18n/locales/*.json
+ */
+
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import logo from '@/assets/images/aramex-logo-english.webp';
+import { Globe, Menu, X, ChevronDown } from 'lucide-react';
 
-
-
+// Supported languages — add more here as needed
+const LANGUAGES = [
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'ar', label: 'العربية', flag: '🇦🇪' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+];
 
 const Header = () => {
-    const [isOpen, setIsOpen] = useState(false)
-    const handleclick = ()=>{
-        if (isOpen) {
-            setIsOpen(false)
-        } else
-        {
-            setIsOpen(true)
-        }
-    }
-    return ( 
-        <>
-        <header className="flex justify-between gap-3 bg-white">
-           <div id="logo">
-            <img src= {logo} alt="company-banner" className ="w-name p-3 larg:w-56" />
-           </div>
-           <div id="desktop-menu" className=" hidden gap-4 p-3 text-[16px] font-medium  rounded-md larg:flex ">
-            <p className="hover:text-aramexRed  cursor-pointer border-aramexRed hover:border-b"> Ship and track</p>
-            <a href="#" className =" hover:text-aramexRed  cursor-pointer border-aramexRed hover:border-b">Solutions</a>
-            <Link to ='/About'><p className="hover:text-aramexRed cursor-pointer border-aramexRed hover:border-b">About us </p></Link>
-            </div>
-            <div className="hidden text-gray-400 p-3 gap-2 larg:flex ">
-                <span className="flex text-[14px]">
-                        <img src= {translate} alt="Translation" className="h-7" />
-                        <div id="google_translate_element"></div>
-                    {/* Manual selector: keep it separate from Google-injected container to avoid duplicate UI */}
-                    <select
-                        id="languageSwitcher"
-                        className="ml-2 hidden"
-                        defaultValue=""
-                        onChange={(e) => {
-                            const val = e.target.value
-                            const goog = document.querySelector('.goog-te-combo')
-                            if (goog) {
-                                goog.value = val
-                                goog.dispatchEvent(new Event('change'))
-                            } else {
-                                try {
-                                    localStorage.setItem('preferredLanguage_publicTrack', val)
-                                } catch (err) {
-                                    console.warn('[Header] failed to save preferredLanguage_publicTrack', err)
-                                }
-                            }
-                        }}
+  const { t, i18n } = useTranslation();
+  const location = useLocation();
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+
+  // Find the currently active language object, default to English
+  const currentLang = LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0];
+
+  // Returns true if the current page matches this path (for active link styling)
+  const isActive = (path) => location.pathname === path;
+
+  // Switches the app language and saves preference to localStorage
+  function changeLanguage(code) {
+    i18n.changeLanguage(code);
+    localStorage.setItem('preferredLanguage', code);
+    setLangOpen(false);
+    // Set RTL direction for Arabic
+    document.documentElement.dir = code === 'ar' ? 'rtl' : 'ltr';
+  }
+
+  // Navigation links array — add new pages here
+  const navLinks = [
+    { label: t('nav.track'), path: '/track' },
+    { label: t('nav.container'), path: '/container' },
+    { label: t('nav.services'), path: '/services' },
+    { label: t('nav.about'), path: '/about' },
+    { label: t('nav.contact'), path: '/contact' },
+  ];
+
+  return (
+    <header className="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+
+          {/* Logo — clicking it goes to the track page (home) */}
+          <Link to="/track" className="flex-shrink-0">
+            <img src={logo} alt="Company Logo" className="h-10 w-auto" />
+          </Link>
+
+          {/* Desktop navigation links */}
+          <nav className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150
+                  ${isActive(link.path)
+                    ? 'text-aramexRed bg-red-50'
+                    : 'text-gray-600 hover:text-aramexRed hover:bg-gray-50'
+                  }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right side: Language switcher + Admin login */}
+          <div className="hidden lg:flex items-center gap-3">
+
+            {/* Language dropdown button */}
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-600
+                           hover:bg-gray-50 transition-colors"
+              >
+                <Globe size={16} />
+                <span>{currentLang.flag} {currentLang.label}</span>
+                <ChevronDown size={14} className={`transition-transform ${langOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Language dropdown list */}
+              {langOpen && (
+                <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200
+                                rounded-lg shadow-lg py-1 min-w-[140px] z-50">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => changeLanguage(lang.code)}
+                      className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2
+                                  hover:bg-gray-50 transition-colors
+                                  ${i18n.language === lang.code ? 'text-aramexRed font-medium' : 'text-gray-700'}`}
                     >
-                    </select>
-                    </span>
-                <span className="flex ml-3">
-                    <img src={pin} alt="location-pin" className="h-7" />
-                    <p>United Arab Emirates</p>
-                </span>
+                      <span>{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-           <div id="moblie-menu" className=" larg:hidden " onClick={handleclick}>
-            {!isOpen && <img src={Menu} alt="" className="w-14 p-2 ml-2" />}
-            {isOpen && <p className=' font-semibold text-aramexRed text-3xl w-[33px] text-center mt-1 mr-3'>X</p>}
 
-           </div>
-        </header>
-
-        <section className="h-banner flex align-baseline justify-center larg:hidden">
-            {isOpen && <div id="drop-menu" className="p-3 w-input h-64 font-medium bg-white rounded-md absolute z-10 block">
-            <p className="hover:text-aramexRed w-36 p-5 cursor-pointer border-aramexRed hover:border-b"> Ship and track</p>
-            <p className=" hover:text-aramexRed w-24 p-5 cursor-pointer border-aramexRed hover:border-b">Solutions</p>
-            <a href="About.html"><p className="hover:text-aramexRed w-32 p-5 cursor-pointer border-aramexRed hover:border-b">About us</p></a>
-            </div>}
+            {/* Admin login */}
            
-            <div id="banner" className ="z-0 absolute larg:hidden">
-                <img src={banner} alt="" className="w-input p-1 "/>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="lg:hidden p-2 text-gray-600 hover:text-aramexRed transition-colors"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile navigation drawer */}
+      {mobileOpen && (
+        <div className="lg:hidden border-t border-gray-100 bg-white shadow-lg">
+          <nav className="px-4 py-3 space-y-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                onClick={() => setMobileOpen(false)}
+                className={`block px-4 py-3 rounded-md text-sm font-medium transition-colors
+                  ${isActive(link.path)
+                    ? 'text-aramexRed bg-red-50'
+                    : 'text-gray-700 hover:text-aramexRed hover:bg-gray-50'
+                  }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            {/* Mobile language switcher */}
+            <div className="pt-2 border-t border-gray-100">
+              <p className="text-xs text-gray-400 px-4 pb-2 uppercase tracking-wider">Language</p>
+              {LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => { changeLanguage(lang.code); setMobileOpen(false); }}
+                  className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2
+                              hover:bg-gray-50 rounded-md
+                              ${i18n.language === lang.code ? 'text-aramexRed font-medium' : 'text-gray-700'}`}
+                >
+                  {lang.flag} {lang.label}
+                </button>
+              ))}
             </div>
-        </section>
-        </>
-     );
-}
- 
+
+            <Link
+              to="/login"
+              onClick={() => setMobileOpen(false)}
+              className="block mt-2 px-4 py-3 bg-aramexRed text-white text-sm font-medium
+                         rounded-md text-center hover:bg-red-700 transition-colors"
+            >
+              {t('nav.login')}
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+};
+
 export default Header;
