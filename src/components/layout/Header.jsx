@@ -176,7 +176,7 @@ const Header = () => {
             <Link
               to="/login"
               onClick={() => setMobileOpen(false)}
-              className="block mt-2 px-4 py-3 bg-aramexRed text-white text-sm font-medium
+              className="hidden mt-2 px-4 py-3 bg-aramexRed text-white text-sm font-medium
                          rounded-md text-center hover:bg-red-700 transition-colors"
             >
               {t('nav.login')}
